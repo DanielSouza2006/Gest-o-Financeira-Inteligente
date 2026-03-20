@@ -3,6 +3,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import json
 import os
+import streamlit.components.v1 as components
 
 # ---------------- CONFIG ----------------
 st.set_page_config(page_title="Controle Financeiro", layout="centered")
@@ -43,8 +44,100 @@ def verificar_login(usuario, senha):
 # ---------------- SESSION ----------------
 if "logado" not in st.session_state:
     st.session_state.logado = False
+    if "Lamp_on" not in st.session_state:
+        st.session_state.lamp_on = False
 
 # ---------------- LOGIN ----------------
+# ---------------- ABAJUR ANIMADO ----------------
+if not st.session_state.lamp_on:
+
+    html_code = """
+    <!DOCTYPE html>
+    <html>
+    <head>
+    <style>
+    body {
+        background: #121417;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+    }
+
+    .lamp {
+        width: 150px;
+        cursor: pointer;
+        text-align: center;
+        position: relative;
+    }
+
+    .shade {
+        width: 150px;
+        height: 80px;
+        background: #f5f0e6;
+        border-radius: 50% 50% 0 0;
+    }
+
+    .base {
+        width: 10px;
+        height: 100px;
+        background: #ccc;
+        margin: auto;
+    }
+
+    .light {
+        width: 300px;
+        height: 200px;
+        background: radial-gradient(circle, rgba(255,220,120,0.5), transparent);
+        position: absolute;
+        top: 80px;
+        left: -75px;
+        opacity: 0;
+        transition: 0.5s;
+    }
+
+    button {
+        margin-top: 20px;
+        padding: 10px;
+        border-radius: 10px;
+        border: none;
+        background: gold;
+        cursor: pointer;
+        font-weight: bold;
+    }
+    </style>
+    </head>
+
+    <body>
+
+    <div class="lamp">
+        <div class="shade"></div>
+        <div class="base"></div>
+        <div class="light" id="light"></div>
+
+        <button onclick="ligar()">💡 Acender</button>
+    </div>
+
+    <script>
+    function ligar(){
+        document.getElementById("light").style.opacity = 1;
+    }
+    </script>
+
+    </body>
+    </html>
+    """
+
+    components.html(html_code, height=500)
+
+    st.write("Depois de acender a luz, clique abaixo 👇")
+
+    if st.button("Continuar"):
+        st.session_state.lamp_on = True
+        st.rerun()
+
+    st.stop()
+
 if not st.session_state.logado:
 
     st.title("🔐 Login")
@@ -90,6 +183,7 @@ menu = st.sidebar.selectbox(
 # BOTÃO SAIR (CORRIGIDO)
 if st.sidebar.button("Sair"):
     st.session_state.logado = False
+    st.session_state.lamp_on = False
     st.rerun()
 
 # TEMA
