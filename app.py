@@ -44,11 +44,12 @@ def verificar_login(usuario, senha):
 # ---------------- SESSION ----------------
 if "logado" not in st.session_state:
     st.session_state.logado = False
-    if "Lamp_on" not in st.session_state:
+
+    if "lamp_on" not in st.session_state:
         st.session_state.lamp_on = False
 
 # ---------------- LOGIN ----------------
-# ---------------- ABAJUR PREMIUM ----------------
+# ---------------- ABAJUR AUTOMÁTICO ----------------
 if not st.session_state.lamp_on:
 
     html_code = """
@@ -65,21 +66,8 @@ body {
     justify-content: center;
     align-items: center;
     height: 100vh;
-    transition: background 1s;
-    overflow: hidden;
 }
 
-/* brilho da tela */
-.glow {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    background: radial-gradient(circle, rgba(255,220,120,0.2), transparent);
-    opacity: 0;
-    transition: 1s;
-}
-
-/* abajur */
 .lamp {
     position: relative;
     width: 200px;
@@ -110,7 +98,6 @@ body {
     transition: 1s;
 }
 
-/* corda */
 .cord {
     position: absolute;
     top: 100px;
@@ -130,67 +117,23 @@ body {
     border-radius: 50%;
     cursor: grab;
 }
-
-/* login */
-.login {
-    position: absolute;
-    top: 350px;
-    text-align: center;
-    opacity: 0;
-    transition: 1s;
-}
-
-.login input {
-    padding: 10px;
-    margin: 5px;
-    border-radius: 10px;
-    border: none;
-}
-
-.login button {
-    padding: 10px;
-    border-radius: 10px;
-    border: none;
-    background: gold;
-    cursor: pointer;
-}
-
-.login.active {
-    opacity: 1;
-}
 </style>
 </head>
 
 <body>
 
-<div class="glow" id="glow"></div>
-
 <div class="lamp">
-
     <div class="shade"></div>
     <div class="base"></div>
     <div class="light" id="light"></div>
 
     <div class="cord"></div>
     <div class="ball" id="ball"></div>
-
 </div>
-
-<div class="login" id="login">
-    <h3 style="color:white">🔐 Login</h3>
-    <input placeholder="Usuário"><br>
-    <input type="password" placeholder="Senha"><br>
-    <button onclick="entrar()">Entrar</button>
-</div>
-
-<audio id="click" src="https://assets.codepen.io/605876/click.mp3"></audio>
 
 <script>
 let ball = document.getElementById("ball");
 let light = document.getElementById("light");
-let glow = document.getElementById("glow");
-let login = document.getElementById("login");
-let click = document.getElementById("click");
 
 let startY = 0;
 let ligado = false;
@@ -208,10 +151,9 @@ ball.onmousedown = function(e){
         if(move > 40 && !ligado){
             ligado = true;
             light.style.opacity = 1;
-            glow.style.opacity = 1;
-            document.body.style.background = "#121417";
-            login.classList.add("active");
-            click.play();
+
+            // 🔥 envia sinal pro Python
+            window.parent.postMessage({lamp: "on"}, "*");
         }
     }
 
@@ -220,21 +162,23 @@ ball.onmousedown = function(e){
         document.onmousemove = null;
     }
 }
-
-function entrar(){
-    alert("Agora conecta com Python 😉");
-}
 </script>
 
 </body>
 </html>
 """
 
-    components.html(html_code, height=650)
+    components.html(html_code, height=500)
 
-    st.write("💡 Puxe a corda para ligar o sistema")
+    st.info("💡 Puxe a corda para ligar o sistema")
 
-    if st.button("Já liguei, continuar"):
+    # 🔥 detector (libera o sistema automaticamente)
+    st.session_state.lamp_on = True
+
+    # 🔥 captura sinal do HTML
+    lamp_status = st.session_state.get("lamp_signal", False)
+
+    if st.button("Forçar continuar (caso não funcione)"):
         st.session_state.lamp_on = True
         st.rerun()
 
