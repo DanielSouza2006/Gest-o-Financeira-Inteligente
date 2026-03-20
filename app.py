@@ -5,6 +5,11 @@ import json
 import os
 import streamlit.components.v1 as components
 
+query = st.query_params
+
+if query.get("lamp") == "on":
+   st.session_state.lamp_on = True
+
 # ---------------- CONFIG ----------------
 st.set_page_config(page_title="Controle Financeiro", layout="centered")
 
@@ -49,7 +54,7 @@ if "logado" not in st.session_state:
         st.session_state.lamp_on = False
 
 # ---------------- LOGIN ----------------
-# ---------------- ABAJUR AUTOMÁTICO ----------------
+# ---------------- ABAJUR AUTOMÁTICO REAL ----------------
 if not st.session_state.lamp_on:
 
     html_code = """
@@ -57,11 +62,10 @@ if not st.session_state.lamp_on:
 <html>
 <head>
 <meta charset="UTF-8">
-
 <style>
 body {
     margin: 0;
-    background: #000;
+    background: black;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -98,15 +102,6 @@ body {
     transition: 1s;
 }
 
-.cord {
-    position: absolute;
-    top: 100px;
-    left: 140px;
-    width: 3px;
-    height: 80px;
-    background: #555;
-}
-
 .ball {
     position: absolute;
     top: 180px;
@@ -126,8 +121,6 @@ body {
     <div class="shade"></div>
     <div class="base"></div>
     <div class="light" id="light"></div>
-
-    <div class="cord"></div>
     <div class="ball" id="ball"></div>
 </div>
 
@@ -152,8 +145,10 @@ ball.onmousedown = function(e){
             ligado = true;
             light.style.opacity = 1;
 
-            // 🔥 envia sinal pro Python
-            window.parent.postMessage({lamp: "on"}, "*");
+            // 🔥 REDIRECIONA AUTOMATICAMENTE
+            setTimeout(() => {
+                window.parent.location.search = "?lamp=on";
+            }, 800);
         }
     }
 
@@ -169,18 +164,6 @@ ball.onmousedown = function(e){
 """
 
     components.html(html_code, height=500)
-
-    st.info("💡 Puxe a corda para ligar o sistema")
-
-    # 🔥 detector (libera o sistema automaticamente)
-    st.session_state.lamp_on = True
-
-    # 🔥 captura sinal do HTML
-    lamp_status = st.session_state.get("lamp_signal", False)
-
-    if st.button("Forçar continuar (caso não funcione)"):
-        st.session_state.lamp_on = True
-        st.rerun()
 
     st.stop()
 
