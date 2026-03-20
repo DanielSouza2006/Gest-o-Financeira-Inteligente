@@ -48,152 +48,193 @@ if "logado" not in st.session_state:
         st.session_state.lamp_on = False
 
 # ---------------- LOGIN ----------------
-# ---------------- ABAJUR ANIMADO ----------------
-# ---------------- ABAJUR PRO ----------------
+# ---------------- ABAJUR PREMIUM ----------------
 if not st.session_state.lamp_on:
 
     html_code = """
-    <!DOCTYPE html>
-    <html>
-    <head>
-    <style>
-    body {
-        margin: 0;
-        background: #121417;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        height: 100vh;
-        overflow: hidden;
-    }
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
 
-    .lamp-container {
-        position: relative;
-        width: 200px;
-        height: 300px;
-    }
+<style>
+body {
+    margin: 0;
+    background: #000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    transition: background 1s;
+    overflow: hidden;
+}
 
-    .shade {
-        width: 200px;
-        height: 100px;
-        background: #f5f0e6;
-        border-radius: 50% 50% 0 0;
-    }
+/* brilho da tela */
+.glow {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle, rgba(255,220,120,0.2), transparent);
+    opacity: 0;
+    transition: 1s;
+}
 
-    .base {
-        width: 12px;
-        height: 150px;
-        background: #ccc;
-        margin: auto;
-    }
+/* abajur */
+.lamp {
+    position: relative;
+    width: 200px;
+}
 
-    .light {
-        position: absolute;
-        top: 90px;
-        left: -80px;
-        width: 360px;
-        height: 250px;
-        background: radial-gradient(circle, rgba(255,220,120,0.6), transparent);
-        opacity: 0;
-        transition: 0.6s;
-    }
+.shade {
+    width: 200px;
+    height: 100px;
+    background: #f5f0e6;
+    border-radius: 50% 50% 0 0;
+}
 
-    /* corda */
-    .cord {
-        position: absolute;
-        top: 100px;
-        left: 130px;
-        width: 4px;
-        height: 80px;
-        background: #555;
-    }
+.base {
+    width: 12px;
+    height: 150px;
+    background: #ccc;
+    margin: auto;
+}
 
-    .ball {
-        position: absolute;
-        top: 170px;
-        left: 120px;
-        width: 20px;
-        height: 20px;
-        background: gold;
-        border-radius: 50%;
-        cursor: grab;
-    }
+.light {
+    position: absolute;
+    top: 90px;
+    left: -80px;
+    width: 360px;
+    height: 250px;
+    background: radial-gradient(circle, rgba(255,220,120,0.6), transparent);
+    opacity: 0;
+    transition: 1s;
+}
 
-    .btn {
-        position: absolute;
-        top: 260px;
-        left: 50%;
-        transform: translateX(-50%);
-        padding: 10px;
-        border-radius: 10px;
-        border: none;
-        background: gold;
-        cursor: pointer;
-        display: none;
-    }
-    </style>
-    </head>
+/* corda */
+.cord {
+    position: absolute;
+    top: 100px;
+    left: 140px;
+    width: 3px;
+    height: 80px;
+    background: #555;
+}
 
-    <body>
+.ball {
+    position: absolute;
+    top: 180px;
+    left: 130px;
+    width: 20px;
+    height: 20px;
+    background: gold;
+    border-radius: 50%;
+    cursor: grab;
+}
 
-    <div class="lamp-container">
+/* login */
+.login {
+    position: absolute;
+    top: 350px;
+    text-align: center;
+    opacity: 0;
+    transition: 1s;
+}
 
-        <div class="shade"></div>
-        <div class="base"></div>
-        <div class="light" id="light"></div>
+.login input {
+    padding: 10px;
+    margin: 5px;
+    border-radius: 10px;
+    border: none;
+}
 
-        <div class="cord"></div>
-        <div class="ball" id="ball"></div>
+.login button {
+    padding: 10px;
+    border-radius: 10px;
+    border: none;
+    background: gold;
+    cursor: pointer;
+}
 
-        <button class="btn" id="btn">Continuar</button>
+.login.active {
+    opacity: 1;
+}
+</style>
+</head>
 
-    </div>
+<body>
 
-    <audio id="click" src="https://assets.codepen.io/605876/click.mp3"></audio>
+<div class="glow" id="glow"></div>
 
-    <script>
-    let ball = document.getElementById("ball");
-    let light = document.getElementById("light");
-    let btn = document.getElementById("btn");
-    let click = document.getElementById("click");
+<div class="lamp">
 
-    let startY = 0;
-    let puxado = false;
+    <div class="shade"></div>
+    <div class="base"></div>
+    <div class="light" id="light"></div>
 
-    ball.onmousedown = function(e){
-        startY = e.clientY;
+    <div class="cord"></div>
+    <div class="ball" id="ball"></div>
 
-        document.onmousemove = function(e){
-            let move = e.clientY - startY;
+</div>
 
-            if(move > 0 && move < 60){
-                ball.style.top = (170 + move) + "px";
-            }
+<div class="login" id="login">
+    <h3 style="color:white">🔐 Login</h3>
+    <input placeholder="Usuário"><br>
+    <input type="password" placeholder="Senha"><br>
+    <button onclick="entrar()">Entrar</button>
+</div>
 
-            if(move > 40 && !puxado){
-                puxado = true;
-                light.style.opacity = 1;
-                btn.style.display = "block";
-                click.play();
-            }
+<audio id="click" src="https://assets.codepen.io/605876/click.mp3"></audio>
+
+<script>
+let ball = document.getElementById("ball");
+let light = document.getElementById("light");
+let glow = document.getElementById("glow");
+let login = document.getElementById("login");
+let click = document.getElementById("click");
+
+let startY = 0;
+let ligado = false;
+
+ball.onmousedown = function(e){
+    startY = e.clientY;
+
+    document.onmousemove = function(e){
+        let move = e.clientY - startY;
+
+        if(move > 0 && move < 60){
+            ball.style.top = (180 + move) + "px";
         }
 
-        document.onmouseup = function(){
-            ball.style.top = "170px";
-            document.onmousemove = null;
+        if(move > 40 && !ligado){
+            ligado = true;
+            light.style.opacity = 1;
+            glow.style.opacity = 1;
+            document.body.style.background = "#121417";
+            login.classList.add("active");
+            click.play();
         }
     }
-    </script>
 
-    </body>
-    </html>
-    """
+    document.onmouseup = function(){
+        ball.style.top = "180px";
+        document.onmousemove = null;
+    }
+}
 
-    components.html(html_code, height=550)
+function entrar(){
+    alert("Agora conecta com Python 😉");
+}
+</script>
 
-    st.write("💡 Puxe a corda e depois clique em continuar")
+</body>
+</html>
+"""
 
-    if st.button("Continuar"):
+    components.html(html_code, height=650)
+
+    st.write("💡 Puxe a corda para ligar o sistema")
+
+    if st.button("Já liguei, continuar"):
         st.session_state.lamp_on = True
         st.rerun()
 
