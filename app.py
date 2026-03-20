@@ -49,6 +49,7 @@ if "logado" not in st.session_state:
 
 # ---------------- LOGIN ----------------
 # ---------------- ABAJUR ANIMADO ----------------
+# ---------------- ABAJUR PRO ----------------
 if not st.session_state.lamp_on:
 
     html_code = """
@@ -57,70 +58,130 @@ if not st.session_state.lamp_on:
     <head>
     <style>
     body {
+        margin: 0;
         background: #121417;
         display: flex;
         justify-content: center;
         align-items: center;
         height: 100vh;
+        overflow: hidden;
     }
 
-    .lamp {
-        width: 150px;
-        cursor: pointer;
-        text-align: center;
+    .lamp-container {
         position: relative;
+        width: 200px;
+        height: 300px;
     }
 
     .shade {
-        width: 150px;
-        height: 80px;
+        width: 200px;
+        height: 100px;
         background: #f5f0e6;
         border-radius: 50% 50% 0 0;
     }
 
     .base {
-        width: 10px;
-        height: 100px;
+        width: 12px;
+        height: 150px;
         background: #ccc;
         margin: auto;
     }
 
     .light {
-        width: 300px;
-        height: 200px;
-        background: radial-gradient(circle, rgba(255,220,120,0.5), transparent);
         position: absolute;
-        top: 80px;
-        left: -75px;
+        top: 90px;
+        left: -80px;
+        width: 360px;
+        height: 250px;
+        background: radial-gradient(circle, rgba(255,220,120,0.6), transparent);
         opacity: 0;
-        transition: 0.5s;
+        transition: 0.6s;
     }
 
-    button {
-        margin-top: 20px;
+    /* corda */
+    .cord {
+        position: absolute;
+        top: 100px;
+        left: 130px;
+        width: 4px;
+        height: 80px;
+        background: #555;
+    }
+
+    .ball {
+        position: absolute;
+        top: 170px;
+        left: 120px;
+        width: 20px;
+        height: 20px;
+        background: gold;
+        border-radius: 50%;
+        cursor: grab;
+    }
+
+    .btn {
+        position: absolute;
+        top: 260px;
+        left: 50%;
+        transform: translateX(-50%);
         padding: 10px;
         border-radius: 10px;
         border: none;
         background: gold;
         cursor: pointer;
-        font-weight: bold;
+        display: none;
     }
     </style>
     </head>
 
     <body>
 
-    <div class="lamp">
+    <div class="lamp-container">
+
         <div class="shade"></div>
         <div class="base"></div>
         <div class="light" id="light"></div>
 
-        <button onclick="ligar()">💡 Acender</button>
+        <div class="cord"></div>
+        <div class="ball" id="ball"></div>
+
+        <button class="btn" id="btn">Continuar</button>
+
     </div>
 
+    <audio id="click" src="https://assets.codepen.io/605876/click.mp3"></audio>
+
     <script>
-    function ligar(){
-        document.getElementById("light").style.opacity = 1;
+    let ball = document.getElementById("ball");
+    let light = document.getElementById("light");
+    let btn = document.getElementById("btn");
+    let click = document.getElementById("click");
+
+    let startY = 0;
+    let puxado = false;
+
+    ball.onmousedown = function(e){
+        startY = e.clientY;
+
+        document.onmousemove = function(e){
+            let move = e.clientY - startY;
+
+            if(move > 0 && move < 60){
+                ball.style.top = (170 + move) + "px";
+            }
+
+            if(move > 40 && !puxado){
+                puxado = true;
+                light.style.opacity = 1;
+                btn.style.display = "block";
+                click.play();
+            }
+        }
+
+        document.onmouseup = function(){
+            ball.style.top = "170px";
+            document.onmousemove = null;
+        }
     }
     </script>
 
@@ -128,9 +189,9 @@ if not st.session_state.lamp_on:
     </html>
     """
 
-    components.html(html_code, height=500)
+    components.html(html_code, height=550)
 
-    st.write("Depois de acender a luz, clique abaixo 👇")
+    st.write("💡 Puxe a corda e depois clique em continuar")
 
     if st.button("Continuar"):
         st.session_state.lamp_on = True
