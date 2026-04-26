@@ -1,0 +1,243 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family:"Nexa";
+    font-weight: 400;
+}
+
+@font-face {
+    font-family:"Nexa";
+    src: url(assets/nexa-light.otf);
+    font-weight:300;
+    font-style: normal;
+}
+
+@font-face {
+    font-family:"Nexa";
+    src: url(assets/nexaregular.otf);
+    font-weight:400;
+    font-style: normal;
+}
+
+@font-face {
+    font-family:"Nexa";
+    src: url(assets/nexa-bold.otf);
+    font-weight:700;
+    font-style: normal;
+}
+
+body{
+    color: white;
+}
+
+h2{
+    font-size: 45px;
+    margin-bottom: 25px;
+    text-align: center;
+    font-weight: 700;
+}
+
+form{
+    display: flex;
+    flex-direction: column;
+    gap: 16px;  
+
+    button{
+        background: linear-gradient(90deg, #968FF8 0%, #F1D2F9 100%);;
+    }
+}
+
+input, button{
+    padding: 12px 20px;
+    border-radius: 12px;
+    border: none;
+    outline: none;
+    font-size: 12px;
+    width: 400px;
+}
+
+input{
+    background-color: rgba(255, 255, 255, 0.20);
+    color: rgba(255, 255, 255, 0.80);
+    font-family:"Nexa";
+}
+
+input::placeholder{
+    color: rgba(255, 255, 255, 0.50);
+    font-family:"Nexa"; ;
+}
+button{
+    margin-top: 8px;
+    font-weight: 700;
+    color: rgba(0, 0, 0, 0.8);
+    padding: 16px;
+    cursor: pointer;;
+    transition: all 0.3s;
+}
+
+button:hover{
+    transform: translateY(-4px);
+}
+
+p{
+    margin-bottom: 20px;
+    width: 400px;
+    text-align: center;
+    color: rgba(255, 255, 255, 0.80);
+}
+
+.containerPai{
+    max-width: 100%;
+    height: 100vh;
+    background-color: #14151a;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.card{
+    width: 80%;
+    height: 90vh;
+    background-color: rgba(255, 255, 255, 0.10);
+    border-radius: 32px;
+    padding: 32px 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.esquerda, .direita {
+    width: 50%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 1;
+}
+
+.formLogin, .façaLogin, .façaCadastro, .formCadastro{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;;
+}
+
+
+.façaCadastro,.façaLogin{
+    position: absolute;
+    h2, p{
+      color: rgba(0, 0, 0, 0.8);  
+    }
+
+    button{
+        background-color: rgba(255, 255, 255, 0.20);
+        border: 2px solid rgba(0, 0, 0, 0.8);
+    }
+}
+
+
+/*background movel*/
+.card::after{
+    width: 100%;
+    height: 100%;
+    content: "";
+    background-image: url(assets/gradiente-desfocado-rosa-azul-fundo-abstrato_53876-117324.avif);
+    position: absolute;
+    top: 0;
+    right: 0;
+    background-size: cover;
+    background-position: center;
+    z-index: 0;
+}
+
+
+/*LOGIN ACTIVE*/
+.card.loginActive .façaLogin{
+    opacity: 0 ;
+    pointer-events: none;
+}
+
+
+.card.loginActive .façaCadastro{
+    transform: translateX(0);
+    transition: all 0.3s .3s;
+    opacity: 1;
+}
+
+.card.loginActive .formLogin{
+    transition: all 0.3s .3s;
+    opacity: 1;
+}
+
+
+
+.card.loginActive .formCadastro{
+    opacity: 0;
+    pointer-events: none;
+}
+
+.card.loginActive::after{
+    transform: translateX(50%);
+}
+
+
+/*CADASTRO ACTIVE*/
+.card.cadastroActive .façaCadastro{
+    opacity: 0 ;
+    pointer-events: none;
+}
+
+
+.card.cadastroActive .formLogin{
+    opacity: 0;
+    pointer-events: none;
+}
+
+.card.cadastroActive::after{
+    transform: translateX(-50%);
+}
+
+
+.card.cadastroActive .façaLogin{
+    transform: translateX(0);
+    transition: all 0.3s .3s;
+    opacity: 1;
+}
+
+.card.cadastroActive .formCadastro{
+    transition: all 0.3s .3s;
+    opacity: 1;
+}
+
+
+/*TRANSITION*/
+.card::after{
+    transition: all 0.5s;
+}
+
+.façaCadastro{
+    transition: all 0.3s 0;
+    transform: translateX(200%);
+}
+
+
+.formLogin{
+    opacity: 0;
+    transition: all 0.3s 0;
+}
+
+
+.façaLogin{
+    transition: all 0.3s 0;
+    transform: translateX(-200%);
+}
+
+
+.formCadastro{
+    opacity: 0;
+    transition: all 0.3s 0;
+}
